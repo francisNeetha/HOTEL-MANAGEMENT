@@ -4,6 +4,7 @@
     "module": "ESNext",
     "jsx": "react-jsx",
     "strict": true,
+    "noImplicitAny": true,
     "esModuleInterop": true,
     "moduleResolution": "Node",
     "skipLibCheck": true,
