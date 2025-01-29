@@ -1,0 +1,124 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    background-color: #f9f9f9;
+  }
+  
+  .signup-container {
+    display: flex;
+    height: 100vh; 
+    align-items: stretch;
+    
+  }
+  
+  .signup-logo {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #0d3016; 
+    border-top-right-radius: 31px;
+    border-bottom-right-radius: 31px;
+  }
+  
+  .signup-logo img {
+    max-width: 80%;
+    height: auto;
+  }
+  
+  .signup-form-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .signup-form {
+    width: 80%;
+    max-width: 435px;
+    height: 657px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .signup-form h2{
+    color: #e8a541;
+    font-size: 65px;
+    text-align: center;
+  }
+  
+  .signup-input {
+    width: 75%;
+    padding: 10px;
+    margin: 16px 42px;
+    border: 1px solid hsl(0, 10%, 82%);
+    border-radius: 5px;
+}
+  
+  .signup-button {
+    width: 34%;
+    padding: 13px 11px;
+    margin: 20px 130px;
+    background-color: #e8a541;
+    color: white;
+    border: none;
+    border-radius: 34px;
+    cursor: pointer;
+}
+  
+  .signup-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .error-message {
+    color: red;
+    margin-bottom: 10px;
+  }
+  
+  .success-message {
+    color: green;
+    margin-bottom: 10px;
+  }
+  
+  @media screen and (max-width: 770px) {
+    .signup-logo{
+        display: none;
+    }
+  }
+  @media screen and (max-width: 1024px) {
+    .signup-form {
+      width: 60%; 
+      max-width: 412px;
+      height: 449px;
+    }
+    .signup-form h2 {
+        color: #e8a541;
+        font-size: 40px;
+        text-align: center;
+    }
+    .signup-input {
+        width: 72%;
+        padding: 9px;
+        margin: 12px 35px;
+        border: 1px solid hsl(0, 10%, 82%);
+        border-radius: 5px;
+    }
+    .signup-button {
+        width: 28%;
+        padding: 11px 7px;
+        margin: 16px 109px;
+        background-color: #e8a541;
+        color: white;
+        border: none;
+        border-radius: 34px;
+        cursor: pointer;
+    }
+    html, body {
+        overflow: hidden;
+      }
+  }
+  
