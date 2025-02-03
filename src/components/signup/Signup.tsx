@@ -10,8 +10,6 @@ interface SignupFormValues {
   password: string;
 }
 
-
-
 const Signup: React.FC = () => {
   const [formValues, setFormValues] = useState<SignupFormValues>({
     name: "",
@@ -40,11 +38,8 @@ const Signup: React.FC = () => {
       setError("All fields are required!");
       return;
     }
-
-   
-        console.log("Sending data:", formValues);
-        
-          
+ 
+        console.log("Sending data:", formValues);  
             const response = await axios.post("http://localhost:3001/customers/signup", formValues).catch((err) => {
               if (err.response) {
                 const errorMessage = err.response?.data?.error ?? "Failed to register user!";
@@ -59,12 +54,8 @@ const Signup: React.FC = () => {
               setSuccessMessage("User registered successfully!");
               setFormValues({ name: "", email: "", phone: "", password: "" });
               setError(null);
-            }
-          
-          
-      
+            }   
 };
-
   return (
     <div className="signup-container">
       <div className="signup-logo">
