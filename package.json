@@ -18,7 +18,7 @@
     "sonar": "dotenv -e .env sonar-scanner -Dsonar.login=$SONAR_TOKEN",
     "eject": "react-scripts eject",
     "build": "webpack --config webpack.config.ts",
-    "lint": "eslint  --fix"
+    "lint": "eslint "
   },
   "eslintConfig": {
     "extends": [
