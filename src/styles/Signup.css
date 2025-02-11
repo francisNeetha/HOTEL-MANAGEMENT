@@ -117,8 +117,6 @@ html, body {
         border-radius: 34px;
         cursor: pointer;
     }
-    html, body {
-        overflow: hidden;
-      }
+    
   }
   

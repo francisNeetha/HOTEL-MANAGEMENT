@@ -1,0 +1,66 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    padding: 15px 40px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+
+  }
+
+  .logo img{
+    width: 200px;
+    height: 100px;
+  }
+  
+  .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+    padding: 0px;
+  }
+  
+  .nav-links li {
+    font-size: 25px;
+  }
+  
+  .nav-links a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: color 0.3s;
+    
+  }
+  
+  .nav-links a:hover {
+    color: #4d6f48; 
+  }
+  
+  .phone-number {
+    font-weight: bold;
+    color: #555;
+
+  }
+  
+  .login-button {
+    background-color: #e8a541; 
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s;
+    width: 100%;
+  }
+  
+  .login-button:hover {
+    background-color: #c99b56; 
+  }
+  

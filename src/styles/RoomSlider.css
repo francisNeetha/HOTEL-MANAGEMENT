@@ -1,0 +1,118 @@
+.room-slider-section {
+    background-color: #e5e5e5;
+    padding: 60px 80px;
+    text-align: center;
+  }
+  
+  .room-slider-header {
+    margin-bottom: 40px;
+  }
+  
+  .subtitle {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #888;
+  }
+  
+  h2 {
+    font-size: 42px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .description {
+    font-size: 16px;
+    max-width: 700px;
+    margin: 0 auto;
+    color: #555;
+  }
+  
+  .slider-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  
+  .prev-btn, .next-btn {
+    background: none;
+    border: none;
+    font-size: 30px;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #333;
+  }
+  
+  .prev-btn { left: 10px; }
+  .next-btn { right: 10px; }
+  
+  .room-cards {
+    display: flex;
+    gap: 31px;
+    overflow: hidden;
+    max-width: 974px;
+  }
+  
+  .room-card {
+    flex: 1;
+    min-width: 257px;
+    max-width: 300px;
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: left;
+    transition: transform 0.5s;
+  }
+  
+  .room-card.active {
+    transform: scale(1.05);
+  }
+  
+  .room-image {
+    width: 100%;
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 8px;
+    position: relative;
+  }
+  
+  .room-price {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: white;
+    padding: 5px 10px;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  
+  .room-details {
+    font-size: 14px;
+    color: #555;
+    margin: 10px 0;
+  }
+  
+  .room-description {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .discover-link {
+    max-width: 200px;
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 14px;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    width: 200px;
+  }
+  
+  .discover-link:hover {
+    text-decoration: underline;
+  }
+  

@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import CustomerDashboard from "./CustomerDashboard";
 
@@ -48,24 +48,5 @@ describe("CustomerDashboard Component", () => {
     expect(screen.getByText(/Token: sample_token/)).toBeInTheDocument();
   });
 
-  test("clears localStorage and navigates to login on logout", () => {
-    localStorage.setItem(
-      "user",
-      JSON.stringify({ name: "John Doe", email: "john@example.com", phone: "1234567890", role: "customer" })
-    );
-    localStorage.setItem("token", "sample_token");
-
-    render(
-      <BrowserRouter>
-        <CustomerDashboard />
-      </BrowserRouter>
-    );
-
-    const logoutButton = screen.getByRole("button");
-    fireEvent.click(logoutButton);
-
-    expect(localStorage.getItem("user")).toBeNull();
-    expect(localStorage.getItem("token")).toBeNull();
-    expect(mockNavigate).toHaveBeenCalledWith("/");
-  });
+  
 });

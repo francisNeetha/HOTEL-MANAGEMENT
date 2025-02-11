@@ -22,7 +22,7 @@ const AdminDashboard: React.FC = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    navigate("/");
+    navigate("/login");
   };
 
   return (

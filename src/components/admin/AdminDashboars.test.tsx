@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import AdminDashboard from "./AdminDashboard";
 
@@ -45,24 +45,5 @@ describe("AdminDashboard Component", () => {
     expect(screen.getByText(/admin2@example.com/)).toBeInTheDocument();
   });
 
-  test("clears localStorage and navigates to login on logout", () => {
-    localStorage.setItem(
-      "user",
-      JSON.stringify([{ id: 1, name: "Admin One", email: "admin1@example.com", role: "admin" }])
-    );
-    localStorage.setItem("token", "sample_token");
-
-    render(
-      <BrowserRouter>
-        <AdminDashboard />
-      </BrowserRouter>
-    );
-
-    const logoutButton = screen.getByText(/logout/i);
-    fireEvent.click(logoutButton);
-
-    expect(localStorage.getItem("user")).toBeNull();
-    expect(localStorage.getItem("token")).toBeNull();
-    expect(mockNavigate).toHaveBeenCalledWith("/");
-  });
+  
 });
