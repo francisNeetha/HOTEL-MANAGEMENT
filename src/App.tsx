@@ -12,6 +12,7 @@ import ServicesSection from './components/servicesSection/ServicesSection';
 import NewsletterSection from './components/subscribeSection/SubscribeSection';
 import Homepage from './pages/home-page/Home-page';
 import RoomDetails from './components/roomDetails/RoomDetails';
+import MakePayment from './components/makePayment/MakePayment';
 function App() {
   return (
     <Router>
@@ -28,9 +29,12 @@ function App() {
         <Route path='/NewsletterSection' element={<NewsletterSection/>}></Route>
         <Route path="/footer" element={<Footer />}></Route>
         <Route path='/RoomDetails' element={<RoomDetails/>}></Route>
+        <Route path="/payment/:bookingId" element={<MakePayment />} />
       </Routes>
     </Router>
   );
 }
-
+ 
 export default App;
+ 
+ 

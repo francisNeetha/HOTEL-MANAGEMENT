@@ -5,8 +5,8 @@ import RoomSlider from "../../components/roomSlider/RoomSlider";
 import ServicesSection from "../../components/servicesSection/ServicesSection";
 import NewsletterSection from "../../components/subscribeSection/SubscribeSection";
 import Footer from "../../components/footer/Footer";
-import '../../styles/Homepage.css' 
-
+import '../../styles/Homepage.css'
+ 
 const Homepage: React.FC = () => {
   return (
     <div>
@@ -14,11 +14,11 @@ const Homepage: React.FC = () => {
       <HeroSection />
       <RoomSlider />
       <ServicesSection />
-
+ 
       <section className="experience-section">
         <p className="subtitle">MORE THAN JUST MOUNTAIN VIEW</p>
         <h2 className="title">Unforgettable Experience</h2>
-
+ 
         <div className="experience-grid">
           {[
             {
@@ -62,11 +62,11 @@ const Homepage: React.FC = () => {
           ))}
         </div>
       </section>
-
+ 
       <NewsletterSection />
       <Footer />
     </div>
   );
 };
-
+ 
 export default Homepage;

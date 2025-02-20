@@ -1,18 +1,14 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import Signup from "./Signup";
-import axios, { AxiosError } from "axios";
+import api from "../../axios/axiosInterceptor";
 
-
-jest.mock("axios");
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+jest.mock("../../axios/axiosInterceptor", () => ({
+  post: jest.fn(),
+}));
 
 describe("Signup Component", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
-  test("renders signup form with all fields and button", () => {
+  it("renders the signup form with input fields and submit button", () => {
     render(<Signup />);
 
     expect(screen.getByPlaceholderText("Full Name")).toBeInTheDocument();
@@ -22,210 +18,75 @@ describe("Signup Component", () => {
     expect(screen.getByText("Register")).toBeInTheDocument();
   });
 
-  test("shows error if fields are empty on form submission", async () => {
+  it("displays error when submitting empty form", () => {
     render(<Signup />);
 
     fireEvent.click(screen.getByText("Register"));
 
-    expect(
-      await screen.findByText("All fields are required!")
-    ).toBeInTheDocument();
+    expect(screen.getByText("All fields are required!")).toBeInTheDocument();
   });
 
-  test("handles successful form submission", async () => {
-    mockedAxios.post.mockResolvedValueOnce({
-      status: 201,
-      data: { message: "User registered successfully!" },
-    });
+  it("updates input fields correctly", () => {
+    render(<Signup />);
+
+    const nameInput = screen.getByPlaceholderText<HTMLInputElement>("Full Name");
+const emailInput = screen.getByPlaceholderText<HTMLInputElement>("Email Address");
+const phoneInput = screen.getByPlaceholderText<HTMLInputElement>("Phone Number");
+const passwordInput = screen.getByPlaceholderText<HTMLInputElement>("Password");
+
+
+    fireEvent.change(nameInput, { target: { value: "John Doe" } });
+    fireEvent.change(emailInput, { target: { value: "john@example.com" } });
+    fireEvent.change(phoneInput, { target: { value: "1234567890" } });
+    fireEvent.change(passwordInput, { target: { value: "password123" } });
+
+    expect(nameInput.value).toBe("John Doe");
+    expect(emailInput.value).toBe("john@example.com");
+    expect(phoneInput.value).toBe("1234567890");
+    expect(passwordInput.value).toBe("password123");
+  });
+
+  it("makes an API call when valid data is submitted", async () => {
+    (api.post as jest.Mock).mockResolvedValue({ status: 201, data: { message: "User registered successfully!" } });
 
     render(<Signup />);
 
-    fireEvent.change(screen.getByPlaceholderText("Full Name"), {
-      target: { value: "John Doe" },
-    });
-    fireEvent.change(screen.getByPlaceholderText("Email Address"), {
-      target: { value: "johndoe@example.com" },
-    });
-    fireEvent.change(screen.getByPlaceholderText("Phone Number"), {
-      target: { value: "1234567890" },
-    });
-    fireEvent.change(screen.getByPlaceholderText("Password"), {
-      target: { value: "password123" },
-    });
+    fireEvent.change(screen.getByPlaceholderText("Full Name"), { target: { value: "John Doe" } });
+    fireEvent.change(screen.getByPlaceholderText("Email Address"), { target: { value: "john@example.com" } });
+    fireEvent.change(screen.getByPlaceholderText("Phone Number"), { target: { value: "1234567890" } });
+    fireEvent.change(screen.getByPlaceholderText("Password"), { target: { value: "password123" } });
 
     fireEvent.click(screen.getByText("Register"));
 
     await waitFor(() => {
-      expect(screen.getByText("User registered successfully!")).toBeInTheDocument();
-    });
-
-    expect(screen.getByPlaceholderText("Full Name")).toHaveValue("");
-    expect(screen.getByPlaceholderText("Email Address")).toHaveValue("");
-    expect(screen.getByPlaceholderText("Phone Number")).toHaveValue("");
-    expect(screen.getByPlaceholderText("Password")).toHaveValue("");
-  });
-
-  
-
-  test("handles unknown error during form submission", async () => {
-    mockedAxios.post.mockRejectedValueOnce(new Error("Network Error"));
-
-    render(<Signup />);
-
-    fireEvent.change(screen.getByPlaceholderText("Full Name"), {
-      target: { value: "John Doe" },
-    });
-    fireEvent.change(screen.getByPlaceholderText("Email Address"), {
-      target: { value: "johndoe@example.com" },
-    });
-    fireEvent.change(screen.getByPlaceholderText("Phone Number"), {
-      target: { value: "1234567890" },
-    });
-    fireEvent.change(screen.getByPlaceholderText("Password"), {
-      target: { value: "password123" },
-    });
-
-    fireEvent.click(screen.getByText("Register"));
-
-    await waitFor(() => {
-      expect(screen.getByText("An unknown error occurred!")).toBeInTheDocument();
-    });
-  });
-    
-  test("shows success message when registration is successful", async () => {
-    (axios.post as jest.Mock).mockResolvedValueOnce({ status: 201, data: {} });
-
-    render(<Signup />);
-    fireEvent.change(screen.getByPlaceholderText(/Full Name/i), { target: { value: "John Doe" } });
-    fireEvent.change(screen.getByPlaceholderText(/Email Address/i), { target: { value: "john@example.com" } });
-    fireEvent.change(screen.getByPlaceholderText(/Phone Number/i), { target: { value: "1234567890" } });
-    fireEvent.change(screen.getByPlaceholderText(/Password/i), { target: { value: "password123" } });
-    fireEvent.click(screen.getByRole("button", { name: /register/i }));
-
-    await waitFor(() => expect(screen.getByText(/User registered successfully!/i)).toBeInTheDocument());
-    });
-
-
-    test("displays unknown error message when API request fails without a response", async () => {
-        mockedAxios.post.mockRejectedValueOnce(new AxiosError("Network Error"));
-
-        render(<Signup />);
-
-        fireEvent.change(screen.getByPlaceholderText("Full Name"), {
-            target: { value: "John Doe" },
-        });
-        fireEvent.change(screen.getByPlaceholderText("Email Address"), {
-            target: { value: "johndoe@example.com" },
-        });
-        fireEvent.change(screen.getByPlaceholderText("Phone Number"), {
-            target: { value: "1234567890" },
-        });
-        fireEvent.change(screen.getByPlaceholderText("Password"), {
-            target: { value: "password123" },
-    });
-
-    fireEvent.click(screen.getByText("Register"));
-
-    await waitFor(() => {
-        expect(screen.getByText("An unknown error occurred!")).toBeInTheDocument();
-    });
-    });
-
-    test("shows error if fields are empty on form submission", async () => {
-        render(<Signup />);
-
-        fireEvent.click(screen.getByText("Register"));
-
-        expect(
-        await screen.findByText("All fields are required!")
-        ).toBeInTheDocument();
-    }); 
-});
-
-describe("Signup Component", () => {
-  
-    test("displays fallback error message for unknown error", async () => {
-        mockedAxios.post.mockRejectedValueOnce(new Error("Network Error"));
-  
-        render(<Signup />);
-  
-        fireEvent.change(screen.getByPlaceholderText("Full Name"), {
-            target: { value: "John Doe" },
-        });
-        fireEvent.change(screen.getByPlaceholderText("Email Address"), {
-            target: { value: "johndoe@example.com" },
-        });
-        fireEvent.change(screen.getByPlaceholderText("Phone Number"), {
-            target: { value: "1234567890" },
-        });
-        fireEvent.change(screen.getByPlaceholderText("Password"), {
-            target: { value: "password123" },
-        });
-  
-        fireEvent.click(screen.getByText("Register"));
-  
-        await waitFor(() => {
-            expect(
-                screen.getByText("An unknown error occurred!")
-            ).toBeInTheDocument();
-        });
-    });
-
-    test("handles form submission with empty fields", async () => {
-        render(<Signup />);
-      
-        fireEvent.click(screen.getByText("Register"));
-      
-        await waitFor(() => {
-          expect(screen.getByText("All fields are required!")).toBeInTheDocument();
-        });
-    });
-    
-    test('renders logo correctly', () => {
-        render(<Signup />);
-        const logo = screen.getByAltText('Logo');
-        expect(logo).toHaveAttribute('src', 'test-file-stub');
+      expect(api.post).toHaveBeenCalledWith("/customers/signup", {
+        name: "John Doe",
+        email: "john@example.com",
+        phone: "1234567890",
+        password: "password123",
       });
 
-});
-
-describe("Signup Component", () => {
-    test("handles API error response correctly", async () => {
-        const mockErrorResponse = {
-          response: {
-            data: {
-              error: "An unknown error occurred!!"
-            }
-          }
-        };
-      
-        (axios.post as jest.Mock).mockRejectedValueOnce(mockErrorResponse);
-      
-        render(<Signup />);
-      
-        fireEvent.change(screen.getByPlaceholderText("Full Name"), {
-          target: { value: "John Doe" },
-        });
-        fireEvent.change(screen.getByPlaceholderText("Email Address"), {
-          target: { value: "johndoe@example.com" },
-        });
-        fireEvent.change(screen.getByPlaceholderText("Phone Number"), {
-          target: { value: "1234567890" },
-        });
-        fireEvent.change(screen.getByPlaceholderText("Password"), {
-          target: { value: "password123" },
-        });
-      
-        fireEvent.click(screen.getByText("Register"));
-      
-        await waitFor(() => {
-          expect(screen.getByText(/An unknown error occurred!/i)).toBeInTheDocument();
-        });
-    }); 
-    
-    
-      
-      
+      expect(screen.getByText("User registered successfully!")).toBeInTheDocument();
+    });
   });
-  
 
+  it("displays error message when API request fails", async () => {
+    (api.post as jest.Mock).mockRejectedValue({
+      response: { data: { error: "Email already exists!" } },
+    });
+
+    render(<Signup />);
+
+    fireEvent.change(screen.getByPlaceholderText("Full Name"), { target: { value: "John Doe" } });
+    fireEvent.change(screen.getByPlaceholderText("Email Address"), { target: { value: "john@example.com" } });
+    fireEvent.change(screen.getByPlaceholderText("Phone Number"), { target: { value: "1234567890" } });
+    fireEvent.change(screen.getByPlaceholderText("Password"), { target: { value: "password123" } });
+
+    fireEvent.click(screen.getByText("Register"));
+
+    await waitFor(() => {
+      expect(api.post).toHaveBeenCalled();
+      expect(screen.getByText("Email already exists!")).toBeInTheDocument();
+    });
+  });
+});

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import axios from "axios";
 import "../../styles/Signup.css";
 import logo from "../../assets/signuplogo.png";
+import api from "../../axios/axiosInterceptor"
 
 interface SignupFormValues {
   name: string;
@@ -40,7 +40,7 @@ const Signup: React.FC = () => {
     }
  
         console.log("Sending data:", formValues);  
-            const response = await axios.post("http://localhost:3001/customers/signup", formValues).catch((err) => {
+            const response = await api.post("/customers/signup", formValues).catch((err) => {
               if (err.response) {
                 const errorMessage = err.response?.data?.error ?? "Failed to register user!";
                 setError(errorMessage);

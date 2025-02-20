@@ -4,6 +4,9 @@
 // learn more: https://github.com/testing-library/jest-dom
 // src/setupTests.ts
 import '@testing-library/jest-dom';
+import fetchMock from 'jest-fetch-mock';
+fetchMock.enableMocks();
+
 
 import { TextEncoder, TextDecoder } from 'util';
 

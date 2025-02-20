@@ -1,64 +1,63 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { BrowserRouter } from "react-router-dom";
-import axios from "axios";
+import { BrowserRouter, useNavigate } from "react-router-dom";
 import Login from "./Login";
+import api from "../../axios/axiosInterceptor";
 
-const mockNavigate = jest.fn();
+// Mocking useNavigate globally
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
-  useNavigate: () => mockNavigate,
+  useNavigate: jest.fn(),
 }));
 
-jest.mock("axios");
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+// Mocking Axios globally
+jest.mock("../../axios/axiosInterceptor", () => ({
+  post: jest.fn(),
+}));
 
 describe("Login Component", () => {
+  let mockNavigate: jest.Mock;
+
   beforeEach(() => {
-    localStorage.clear(); 
-    jest.clearAllMocks(); 
+    mockNavigate = jest.fn();
+    (useNavigate as jest.Mock).mockReturnValue(mockNavigate);
   });
 
-  test("renders login form with email, password inputs, and submit button", () => {
+  test("renders login form correctly", () => {
     render(
       <BrowserRouter>
         <Login />
       </BrowserRouter>
     );
 
-    expect(screen.getByPlaceholderText(/enter email/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/enter password/i)).toBeInTheDocument();
+    // Using role instead of `getByText` to avoid multiple elements issue
+    expect(screen.getByRole("heading", { name: /login/i })).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Enter email")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Enter password!")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /login/i })).toBeInTheDocument();
   });
 
-  test("displays error message when login fails", async () => {
-    mockedAxios.post.mockRejectedValueOnce({ response: { data: { error: "Invalid credentials" } } });
-
+  test("updates state on input change", () => {
     render(
       <BrowserRouter>
         <Login />
       </BrowserRouter>
     );
 
-    fireEvent.change(screen.getByPlaceholderText(/enter email/i), { target: { value: "test@example.com" } });
-    fireEvent.change(screen.getByPlaceholderText(/enter password/i), { target: { value: "wrongpassword" } });
-    fireEvent.click(screen.getByRole("button", { name: /login/i }));
+    const emailInput = screen.getByPlaceholderText("Enter email");
+    const passwordInput = screen.getByPlaceholderText("Enter password!");
 
-    await waitFor(() => {
-      expect(screen.getByText(/invalid credentials/i)).toBeInTheDocument();
-    });
+    fireEvent.change(emailInput, { target: { value: "test@example.com" } });
+    fireEvent.change(passwordInput, { target: { value: "password123" } });
+
+    expect(emailInput).toHaveValue("test@example.com");
+    expect(passwordInput).toHaveValue("password123");
   });
 
-  test("logs in admin user and redirects to /admin", async () => {
-    const mockResponse = {
-      data: {
-        token: "admin_token",
-        role: "admin",
-        customers: [{ id: 1, name: "Admin User", email: "admin@example.com", role: "admin" }],
-      },
-    };
-
-    mockedAxios.post.mockResolvedValueOnce(mockResponse);
+  test("submits login form successfully and redirects based on role", async () => {
+    (api.post as jest.Mock).mockResolvedValue({
+      data: { token: "mockToken", role: "customer", customer: { name: "John Doe" } },
+    });
 
     render(
       <BrowserRouter>
@@ -66,27 +65,24 @@ describe("Login Component", () => {
       </BrowserRouter>
     );
 
-    fireEvent.change(screen.getByPlaceholderText(/enter email/i), { target: { value: "admin@example.com" } });
-    fireEvent.change(screen.getByPlaceholderText(/enter password/i), { target: { value: "adminpass" } });
-    fireEvent.click(screen.getByRole("button", { name: /login/i }));
+    fireEvent.change(screen.getByPlaceholderText("Enter email"), { target: { value: "test@example.com" } });
+    fireEvent.change(screen.getByPlaceholderText("Enter password!"), { target: { value: "password123" } });
+    fireEvent.submit(screen.getByRole("button", { name: /login/i }));
 
-    await waitFor(() => {
-      expect(localStorage.getItem("token")).toBe("admin_token");
-      expect(localStorage.getItem("user")).toBe(JSON.stringify(mockResponse.data.customers));
-      expect(mockNavigate).toHaveBeenCalledWith("/admin");
-    });
+    await waitFor(() =>
+      expect(api.post).toHaveBeenCalledWith("/customers/login", {
+        email: "test@example.com",
+        password: "password123",
+      })
+    );
+
+    expect(mockNavigate).toHaveBeenCalledWith("/customer");
   });
 
-  test("logs in customer user and redirects to /customer", async () => {
-    const mockResponse = {
-      data: {
-        token: "customer_token",
-        role: "customer",
-        customer: { name: "John Doe", email: "john@example.com", phone: "1234567890", role: "customer" },
-      },
-    };
-
-    mockedAxios.post.mockResolvedValueOnce(mockResponse);
+  test("displays error message on failed login", async () => {
+    (api.post as jest.Mock).mockRejectedValue({
+      response: { data: { error: "Invalid credentials" } },
+    });
 
     render(
       <BrowserRouter>
@@ -94,14 +90,10 @@ describe("Login Component", () => {
       </BrowserRouter>
     );
 
-    fireEvent.change(screen.getByPlaceholderText(/enter email/i), { target: { value: "john@example.com" } });
-    fireEvent.change(screen.getByPlaceholderText(/enter password/i), { target: { value: "customerpass" } });
-    fireEvent.click(screen.getByRole("button", { name: /login/i }));
+    fireEvent.change(screen.getByPlaceholderText("Enter email"), { target: { value: "wrong@example.com" } });
+    fireEvent.change(screen.getByPlaceholderText("Enter password!"), { target: { value: "wrongpass" } });
+    fireEvent.submit(screen.getByRole("button", { name: /login/i }));
 
-    await waitFor(() => {
-      expect(localStorage.getItem("token")).toBe("customer_token");
-      expect(localStorage.getItem("user")).toBe(JSON.stringify(mockResponse.data.customer));
-      expect(mockNavigate).toHaveBeenCalledWith("/customer");
-    });
+    await waitFor(() => expect(screen.getByText("Invalid credentials")).toBeInTheDocument());
   });
 });

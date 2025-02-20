@@ -1,48 +1,99 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-interface Customer {
-  name: string;
-  email: string;
-  phone: string;
-  role: string;
-}
-
+import { useDispatch, useSelector } from "react-redux";
+import withAuth from "../../components/hoc/withAuth";
+import BookingForm from "../../components/bookingForm/BookingForm";
+import { RootState, AppDispatch } from "../../redux/store";
+import { fetchBookings } from "../../redux/bookingSlice";
+import { logout } from "../../redux/customerSlice";
+import "../../styles/CustomerDashboard.css";
+ 
 const CustomerDashboard: React.FC = () => {
-  const [customer, setCustomer] = useState<Customer | null>(null); 
-  const [token, setToken] = useState<string>("");
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-
+ 
+  const [showBookingForm, setShowBookingForm] = useState(false);
+  const [activeTab, setActiveTab] = useState<"profile" | "bookings">("profile");
+ 
+  const customer = useSelector((state: RootState) => state.customer.user);
+  const bookings = useSelector((state: RootState) => state.bookings.bookings);
+  const loading = useSelector((state: RootState) => state.bookings.loading);
+  const error = useSelector((state: RootState) => state.bookings.error);
+ 
   useEffect(() => {
-    const storedCustomer = localStorage.getItem("user");
-    const storedToken = localStorage.getItem("token");
-
-    if (storedCustomer && storedToken) {
-      setCustomer(JSON.parse(storedCustomer)); 
-      setToken(storedToken); 
+    if (activeTab === "bookings") {
+      dispatch(fetchBookings());
     }
-  }, []); 
-
+  }, [activeTab, dispatch]);
+ 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    dispatch(logout());
     navigate("/login");
   };
-
-  if (!customer) {
-    return <div>Loading...</div>; 
-  }
-
+  const handlePayment = (bookingId: number) => {
+    console.log(`Processing payment for Booking ID: ${bookingId}`);
+    navigate(`/payment/${bookingId}`);
+  };
+  
+ 
   return (
-    <div className="customer-dashboard">
-      <h2>Welcome, {customer.name}!</h2>
-      <p>Email: {customer.email}</p>
-      <p>Phone: {customer.phone}</p>
-      <p>Role: {customer.role}</p>
-      <p>Token: {token}</p> 
-      <button onClick={handleLogout}></button>
+    <div className="dashboard-container">
+      <button className="logout-btn" onClick={handleLogout}>Logout</button>
+ 
+      <div className="sidebar">
+        <button className={activeTab === "profile" ? "active" : ""} onClick={() => setActiveTab("profile")}>Profile</button>
+        <button className={activeTab === "bookings" ? "active" : ""} onClick={() => setActiveTab("bookings")}>Bookings</button>
+      </div>
+ 
+      <div className="dashboard-content">
+        <h2 className="welcome-text">Welcome, {customer?.name}!</h2>
+ 
+        {activeTab === "profile" && customer && (
+          <div className="profile-section">
+            <p><strong>Email:</strong> {customer.email}</p>
+            <p><strong>Phone:</strong> {customer.phone}</p>
+            <p><strong>Role:</strong> {customer.role}</p>
+          </div>
+        )}
+ 
+        {activeTab === "bookings" && (
+          <div className="bookings-section">
+            <h3>Your Bookings</h3>
+            <button className="book-room-btn" onClick={() => setShowBookingForm(!showBookingForm)}>
+              {showBookingForm ? "Close Booking Form" : "Book a Room"}
+            </button>
+ 
+            {showBookingForm && <BookingForm onBookingSuccess={() => setShowBookingForm(false)} />}
+ 
+            {loading && <p>Loading bookings...</p>}
+            {error && <p className="error">{error}</p>}
+ 
+            {bookings.length === 0 && !loading ? <p>No bookings found.</p> : null}
+            <ul>
+  {bookings.map((booking) => (
+    <li key={booking.id}>
+      <strong>Room ID:</strong> {booking.room_id} |
+      <strong> Rooms:</strong> {booking.num_of_room} |
+      <strong> Guests:</strong> {booking.num_of_guest} |
+      <strong> Check-in:</strong> {booking.checkin_date} |
+      <strong> Check-out:</strong> {booking.checkout_date} |
+      <strong> Status:</strong> {booking.status}
+      
+      {booking.status === "Confirmed" && (
+        <button className="payment-btn" onClick={() => handlePayment(booking.id)}>
+          Make Payment
+        </button>
+      )}
+    </li>
+  ))}
+</ul>
+
+          </div>
+        )}
+      </div>
     </div>
   );
 };
-
-export default CustomerDashboard;
+ 
+export default withAuth(CustomerDashboard);
+ 

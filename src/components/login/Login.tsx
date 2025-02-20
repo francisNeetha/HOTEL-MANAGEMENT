@@ -1,31 +1,31 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import "../../styles/Login.css"
-
+import api from "../../axios/axiosInterceptor"
+ 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
+ 
   const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-  
-    axios
-      .post("http://localhost:3001/customers/login", { email, password })
+ 
+    api
+      .post("/customers/login", { email, password })
       .then((response) => {
         console.log("Full API Response:", response.data);
-  
+ 
         const { token, role, customers, customer } = response.data;
-  
+ 
         if (role === "admin" && customers) {
           localStorage.setItem("token", token);
-          localStorage.setItem("user", JSON.stringify(customers)); 
+          localStorage.setItem("user", JSON.stringify(customers));
           navigate("/admin");
         } else if (role === "customer" && customer) {
           localStorage.setItem("token", token);
-          localStorage.setItem("user", JSON.stringify(customer)); 
+          localStorage.setItem("user", JSON.stringify(customer));
           navigate("/customer");
         } else {
           console.error("User data is missing in API response!");
@@ -36,15 +36,15 @@ const Login: React.FC = () => {
         setError(err.response?.data?.error || "Login failed");
       });
   };
-  
-  
-
+ 
+ 
+ 
   return (
     <div className="login-page ">
       <div className="login-container">
         <h2 className="head">Login</h2>
         {error && <p className="error">{error}</p>}
-
+ 
         <form onSubmit={handleLogin}>
           <input
             type="email"
@@ -69,5 +69,5 @@ const Login: React.FC = () => {
     </div>
   );
 };
-
+ 
 export default Login;

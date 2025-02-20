@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import AdminDashboard from "./AdminDashboard";
 
@@ -12,7 +12,7 @@ jest.mock("react-router-dom", () => ({
 describe("AdminDashboard Component", () => {
   beforeEach(() => {
     localStorage.clear();
-    jest.clearAllMocks(); 
+    jest.clearAllMocks();
   });
 
   test("renders loading text when no admin data is available", () => {
@@ -45,5 +45,51 @@ describe("AdminDashboard Component", () => {
     expect(screen.getByText(/admin2@example.com/)).toBeInTheDocument();
   });
 
-  
+  /*** 🔹 NEW TESTS TO INCREASE COVERAGE 🔹 ***/
+
+  test("renders logout button", () => {
+    render(
+      <BrowserRouter>
+        <AdminDashboard />
+      </BrowserRouter>
+    );
+
+    expect(screen.getByRole("button", { name: /logout/i })).toBeInTheDocument();
+  });
+
+  test("logs out the admin and navigates to login", () => {
+    localStorage.setItem("user", JSON.stringify([{ id: 1, name: "Admin", email: "admin@example.com", role: "admin" }]));
+    localStorage.setItem("token", "test_token");
+
+    render(
+      <BrowserRouter>
+        <AdminDashboard />
+      </BrowserRouter>
+    );
+
+    const logoutButton = screen.getByRole("button", { name: /logout/i });
+
+    fireEvent.click(logoutButton);
+
+    // Check if localStorage is cleared
+    expect(localStorage.getItem("user")).toBeNull();
+    expect(localStorage.getItem("token")).toBeNull();
+
+    // Check if navigate was called with "/login"
+    expect(mockNavigate).toHaveBeenCalledWith("/login");
+  });
+
+ 
+
+  test("renders correctly when no admins are found", () => {
+    localStorage.setItem("user", "[]"); // Empty array
+
+    render(
+      <BrowserRouter>
+        <AdminDashboard />
+      </BrowserRouter>
+    );
+
+    expect(screen.getByText(/loading.../i)).toBeInTheDocument();
+  });
 });

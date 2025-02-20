@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import "../../styles/RoomSlider.css";
+import api from '../../axios/axiosInterceptor';
 
 interface Room {
   id: number;
@@ -15,15 +15,8 @@ interface Room {
   beds: string;
   description: string;
   image: string;
+  image_url: string;
 }
-
-const roomImages: { [key: number]: string } = {
-  1: "/images/family.jpg",
-  2: "/images/double.jpg",
-  3: "/images/delux.jpg",
-  4: "/images/medow.jpg",
-  5: "/images/luxury.jpg",
-};
 
 const RoomSlider: React.FC = () => {
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -31,7 +24,7 @@ const RoomSlider: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get("http://localhost:3001/rooms")
+    api.get('/rooms')
       .then((response) => {
         console.log("Fetched Rooms:", response.data); 
         const updatedRooms: Room[] = response.data.map((room: Room) => ({
@@ -39,7 +32,7 @@ const RoomSlider: React.FC = () => {
           title: `Room ${room.room_number}`,
           guests: `${room.capacity} Guests`,
           beds: "2 Beds",
-          image: roomImages[room.room_type_id] || "/images/family.jpg", 
+          image: room.image_url, 
         }));
         setRooms(updatedRooms);
       })
@@ -48,14 +41,20 @@ const RoomSlider: React.FC = () => {
       });
   }, []);
   
-
-  const nextSlide = () => { 
-    setCurrentIndex((prev) => (prev + 1) % rooms.length);
+  const nextSlide = () => {
+    if (currentIndex + 3 < rooms.length) {
+      setCurrentIndex((prev) => prev + 1);
+    }
   };
 
   const prevSlide = () => {
-    setCurrentIndex((prev) => (prev - 1 + rooms.length) % rooms.length);
+    if (currentIndex > 0) {
+      setCurrentIndex((prev) => prev - 1);
+    }
   };
+
+  const isNextDisabled = currentIndex + 3 >= rooms.length;
+  const isPrevDisabled = currentIndex === 0;
 
   const handleDiscoverMore = (room: Room) => {
     navigate(`/RoomDetails`, { state: { room } });
@@ -72,34 +71,33 @@ const RoomSlider: React.FC = () => {
       </div>
 
       <div className="slider-container">
-  {rooms.length === 0 ? (
-    <p className="loading-message">Loading rooms...</p>  
-  ) : (
-    <>
-      <button className="prev-btn" onClick={prevSlide}>❮</button>
-      <div className="room-cards">
-        {rooms.slice(currentIndex, currentIndex + 3).map((room) => (
-          <div key={room.id} className="room-card">
-            <div className="room-image" style={{ backgroundImage: `url(${room.image})` }}>
-              <span className="room-price">${room.price} / NIGHT</span>
+        {rooms.length === 0 ? (
+          <p className="loading-message">Loading rooms...</p>  
+        ) : (
+          <>
+            <button className="prev-btn" onClick={prevSlide} disabled={isPrevDisabled}>❮</button>
+            <div className="room-cards">
+              {rooms.slice(currentIndex, currentIndex + 3).map((room) => (
+                <div key={room.id} className="room-card">
+                  <div className="room-image" style={{ backgroundImage: `url(${room.image})` }}>
+                    <span className="room-price">${room.price} / NIGHT</span>
+                  </div>
+                  <h3>{room.title}</h3>
+                  <p className="room-details">📏 {room.size} &nbsp; 👥 {room.guests} &nbsp; 🛏️ {room.beds}</p>
+                  <p className="room-description">{room.description}</p>
+                  <button
+                    className="discover-link"
+                    onClick={() => handleDiscoverMore(room)}
+                  >
+                    Discover More →
+                  </button>
+                </div>
+              ))}
             </div>
-            <h3>{room.title}</h3>
-            <p className="room-details">📏 {room.size} &nbsp; 👥 {room.guests} &nbsp; 🛏️ {room.beds}</p>
-            <p className="room-description">{room.description}</p>
-            <button
-              className="discover-link"
-              onClick={() => handleDiscoverMore(room)}
-            >
-              Discover More →
-            </button>
-          </div>
-        ))}
+            <button className="next-btn" onClick={nextSlide} disabled={isNextDisabled}>❯</button>
+          </>
+        )}
       </div>
-      <button className="next-btn" onClick={nextSlide}>❯</button>
-    </>
-  )}
-</div>
-
     </section>
   );
 };

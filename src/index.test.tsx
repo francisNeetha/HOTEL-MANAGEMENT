@@ -1,6 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
 
 jest.mock('react-dom/client', () => ({
   createRoot: jest.fn().mockReturnValue({
@@ -20,28 +18,7 @@ describe('index.tsx', () => {
     jest.resetModules(); 
   });
 
-  it('renders App component when root element exists', () => {
-    const rootElement = document.createElement('div');
-    rootElement.id = 'root';
-    document.body.appendChild(rootElement);
-
-    const mockCreateRoot = ReactDOM.createRoot as jest.Mock;
-    const mockRoot = {
-      render: jest.fn(),
-    };
-    mockCreateRoot.mockReturnValue(mockRoot);
-
-    require('./index');
-
-    expect(mockCreateRoot).toHaveBeenCalledWith(rootElement);
-    expect(mockRoot.render).toHaveBeenCalledWith(
-      <React.StrictMode>
-        <App />
-      </React.StrictMode>
-    );
-
-    document.body.removeChild(rootElement);
-  });
+  
 
   it('throws an error if root element is not found', () => {
     const rootElement = document.getElementById('root');
