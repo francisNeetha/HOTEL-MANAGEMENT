@@ -53,7 +53,6 @@ describe("RoomDetails Component", () => {
     const backButton = getByText("Go Back");
     expect(backButton).toBeInTheDocument();
     fireEvent.click(backButton);
-    // Since we're using MemoryRouter, the navigation won't actually happen in this test
   });
 });
 

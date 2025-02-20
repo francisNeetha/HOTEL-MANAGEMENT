@@ -8,7 +8,6 @@ const MakePayment: React.FC = () => {
   const { bookingId } = useParams<{ bookingId: string }>(); // Get booking ID from URL
   const navigate = useNavigate();
 
-  // Get booking details from Redux using the ID
   const booking = useSelector((state: RootState) =>
     state.bookings.bookings.find((b) => b.id === Number(bookingId))
   );
@@ -19,7 +18,7 @@ const MakePayment: React.FC = () => {
 
   const handlePayment = () => {
     alert("Payment Successful!");
-    navigate("/dashboard"); // Navigate back to dashboard after payment
+    navigate("/dashboard"); 
   };
 
   return (

@@ -45,7 +45,6 @@ describe("AdminDashboard Component", () => {
     expect(screen.getByText(/admin2@example.com/)).toBeInTheDocument();
   });
 
-  /*** 🔹 NEW TESTS TO INCREASE COVERAGE 🔹 ***/
 
   test("renders logout button", () => {
     render(
@@ -71,18 +70,16 @@ describe("AdminDashboard Component", () => {
 
     fireEvent.click(logoutButton);
 
-    // Check if localStorage is cleared
     expect(localStorage.getItem("user")).toBeNull();
     expect(localStorage.getItem("token")).toBeNull();
 
-    // Check if navigate was called with "/login"
     expect(mockNavigate).toHaveBeenCalledWith("/login");
   });
 
  
 
   test("renders correctly when no admins are found", () => {
-    localStorage.setItem("user", "[]"); // Empty array
+    localStorage.setItem("user", "[]"); 
 
     render(
       <BrowserRouter>

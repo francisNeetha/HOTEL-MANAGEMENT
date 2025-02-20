@@ -4,13 +4,11 @@ import { BrowserRouter, useNavigate } from "react-router-dom";
 import Login from "./Login";
 import api from "../../axios/axiosInterceptor";
 
-// Mocking useNavigate globally
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
   useNavigate: jest.fn(),
 }));
 
-// Mocking Axios globally
 jest.mock("../../axios/axiosInterceptor", () => ({
   post: jest.fn(),
 }));
@@ -30,7 +28,6 @@ describe("Login Component", () => {
       </BrowserRouter>
     );
 
-    // Using role instead of `getByText` to avoid multiple elements issue
     expect(screen.getByRole("heading", { name: /login/i })).toBeInTheDocument();
     expect(screen.getByPlaceholderText("Enter email")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("Enter password!")).toBeInTheDocument();

@@ -3,10 +3,8 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, useNavigate } from "react-router-dom";
 import withAuth from "./withAuth";  // Adjust the path if needed
 
-// Mock component to wrap
 const MockComponent = () => <div>Protected Content</div>;
 
-// Wrap MockComponent with withAuth HOC
 const ProtectedComponent = withAuth(MockComponent);
 
 jest.mock("react-router-dom", () => ({

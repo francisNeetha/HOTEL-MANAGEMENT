@@ -4,7 +4,6 @@ import { BrowserRouter } from "react-router-dom";
 import RoomSlider from "./RoomSlider";
 import api from "../../axios/axiosInterceptor";
 
-// Mock API response
 jest.mock("../../axios/axiosInterceptor");
 
 const mockRooms = [
@@ -94,7 +93,6 @@ describe("RoomSlider Component", () => {
 
     await waitFor(() => expect(screen.getByText("Room 101")).toBeInTheDocument());
 
-    // Check that the first three rooms are displayed initially
     expect(screen.getByText("Room 101")).toBeInTheDocument();
     expect(screen.getByText("Room 102")).toBeInTheDocument();
     expect(screen.getByText("Room 103")).toBeInTheDocument();

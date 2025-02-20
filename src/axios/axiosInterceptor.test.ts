@@ -1,15 +1,15 @@
-import api from "./axiosInterceptor"; // Import the Axios instance
+import api from "./axiosInterceptor"; 
 import MockAdapter from "axios-mock-adapter";
 
 describe("API Interceptors", () => {
   let mock: MockAdapter;
 
   beforeEach(() => {
-    mock = new MockAdapter(api); // Create a mock adapter for the API instance
+    mock = new MockAdapter(api); 
   });
 
   afterEach(() => {
-    mock.reset(); // Reset mock after each test
+    mock.reset(); 
   });
 
   test("should return successful response", async () => {
@@ -34,8 +34,8 @@ describe("API Interceptors", () => {
   });
 
   test("should handle error when response is undefined", async () => {
-    const error = new Error("Something went wrong"); // Simulating an error with no response
-    jest.spyOn(api, "get").mockRejectedValueOnce(error); // Mock a failed request
+    const error = new Error("Something went wrong"); 
+    jest.spyOn(api, "get").mockRejectedValueOnce(error); 
   
     await expect(api.get("/no-response")).rejects.toThrow("Something went wrong");
   });

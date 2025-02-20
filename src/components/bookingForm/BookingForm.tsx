@@ -20,7 +20,6 @@ const BookingForm: React.FC<{ onBookingSuccess: () => void }> = ({ onBookingSucc
     e.preventDefault();
     setLoading(true);
     
-    // Validation: Prevent empty submissions
     if (!formData.num_of_room || !formData.num_of_guest || !formData.checkin_date || !formData.checkout_date || !formData.room_id) {
       setMessage("All fields are required.");
       setLoading(false);

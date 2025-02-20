@@ -5,7 +5,6 @@ import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 import MakePayment from "./MakePayment";
 
-// Mock useNavigate globally
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
   useNavigate: jest.fn(),
@@ -44,7 +43,6 @@ describe("MakePayment Component", () => {
 
     expect(screen.getByText("Make Payment")).toBeInTheDocument();
 
-    // FIX: Use regex or function matcher to find text split by <strong> tags
     expect(screen.getByText((content, element) => {
       return element?.textContent === "Room ID: 101";
     })).toBeInTheDocument();
@@ -60,7 +58,7 @@ describe("MakePayment Component", () => {
 
   test("displays error message when booking is not found", () => {
     store = mockStore({
-      bookings: { bookings: [] }, // No bookings available
+      bookings: { bookings: [] }, 
     });
 
     render(
