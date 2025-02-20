@@ -1,6 +1,6 @@
 import globals from 'globals';
 import pluginJs from '@eslint/js';
-import { configs } from '@typescript-eslint/eslint-plugin'; // Import TypeScript plugin directly
+import { configs } from '@typescript-eslint/eslint-plugin'; 
 import pluginReact from 'eslint-plugin-react';
 
 export default [
@@ -11,6 +11,6 @@ export default [
     },
   },
   pluginJs.configs.recommended,
-  configs.recommended, // Correct usage of TypeScript plugin rules
+  configs.recommended, 
   pluginReact.configs.recommended,
 ];

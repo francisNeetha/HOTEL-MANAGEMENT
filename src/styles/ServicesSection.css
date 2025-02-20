@@ -1,0 +1,50 @@
+.services-section {
+    background-color: #4d5c46; 
+    color: white;
+    padding: 50px 80px;
+  }
+  
+  .services-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 40px;
+    text-align: left;
+  }
+  
+  .service-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .service-icon {
+    font-size: 40px;
+  }
+  
+  .service-text {
+    display: flex;
+    flex-direction: column;  
+  }
+  
+  .service-text h3 {
+    font-size: 20px;
+    margin-bottom: 5px;
+  }
+  
+  .service-text p {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  
+  @media (max-width: 1024px) {
+    .services-container {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .services-container {
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }
+  

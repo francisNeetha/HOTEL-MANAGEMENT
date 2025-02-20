@@ -4,11 +4,14 @@
     "module": "ESNext",
     "jsx": "react-jsx",
     "strict": true,
+    "noImplicitAny": true,
     "esModuleInterop": true,
     "moduleResolution": "Node",
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "types": ["jest", "node","@testing-library/jest-dom"]
+    
   },
+  
   "include": ["src", "**/*.test.tsx", "**/*.test.ts"]
 }
